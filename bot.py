@@ -34,7 +34,7 @@ async def command_start_handler(message: Message) -> None:
         await message.answer("Работаешь на заводе")
     else:
         await message.answer("Я тебя добавил в список пидорасов")
-        await message.answer("Теперь каждое утро, равно, сука, в 8:00,\nЯ буду напоминать тебе кто ты и где твоё место")
+        await message.answer("Теперь каждое утро, ровно, сука, в 8:00,\nЯ буду напоминать тебе кто ты и где твоё место")
         await asyncio.sleep(3)
         await message.answer("Инженер хуев")
 
@@ -45,7 +45,7 @@ async def echo_handler(message: types.Message) -> None:
 
 async def send_morning(bot: Bot):
     photo = FSInputFile("img/zavod.jpg")
-    target = time(0, 9, 0)
+    target = time(0, 8, 0)
     isWas = False
     while True:
         now = datetime.now().time()
