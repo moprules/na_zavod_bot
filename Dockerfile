@@ -16,9 +16,6 @@ RUN mkdir $APP_HOME && chown -R $APP_USER:$APP_USER $APP_HOME
 # Задаём рабочую директорию
 WORKDIR $APP_HOME
 
-RUN apk add --no-cache tzdata
-ENV TZ=Europe/Moscow
-
 # Копируем файл зависимостей проекта
 COPY . .
 

@@ -16,6 +16,7 @@ multidict==6.0.4
 psycopg2-binary==2.9.7
 pydantic==2.3.0
 pydantic_core==2.6.3
+redis==5.0.0
 sqlparse==0.4.4
 typing_extensions==4.7.1
 yarl==1.9.2

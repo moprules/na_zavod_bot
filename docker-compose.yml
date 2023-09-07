@@ -2,16 +2,29 @@ version: '3.3'
 services:
   db:
     image: postgres:15.3-alpine3.18
+    restart: always
     volumes:
       - db_data:/var/lib/postgresql/data/
     env_file: .env
     ports:
       - 5432:5432
 
+  redis:
+    image: redis:alpine3.18
+    restart: always
+    env_file: .env
+    volumes: 
+      - cache:/data
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+
   bot:
     build: ./
     restart: always
     env_file: .env
+    volumes:
+      - ./:/app/
     depends_on:
       - db
     command: sh -c "python3 manage.py makemigrations --no-input &&
@@ -22,3 +35,5 @@ services:
 
 volumes:
   db_data:
+  cache:
+    driver: local
