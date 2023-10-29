@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+# from zavodik.settings import STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path('admin/', admin.site.urls)
+] # + static(str(STATIC_URL), document_root=str(STATIC_ROOT))
+

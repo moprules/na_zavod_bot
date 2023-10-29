@@ -11,22 +11,41 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from os import getenv
+import os
+from django.core.management.utils import get_random_secret_key
+import dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+HOST = os.getenv('HOST', default='localhost')
+
+if HOST == "localhost":
+    dotenv.load_dotenv(BASE_DIR / ".env")
+
+# bot settings
+API_ID=os.getenv('API_ID')
+API_HASH=os.getenv('API_HASH')
+BOT_TOKEN=os.getenv('BOT_TOKEN')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
+    SECRET_KEY = get_random_secret_key()
+    if HOST == "localhost":
+        dotenv.set_key(BASE_DIR / ".env", "SECRET_KEY", SECRET_KEY)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(getenv("DEBUG", default=0))
+DEBUG = (HOST == "localhost")
+DEBUG = False
 
-ALLOWED_HOSTS = [getenv("DOMAIN", "*")]
+ALLOWED_HOSTS = [os.getenv("DOMAIN", "*")]
 
 
 # Application definition
@@ -75,17 +94,27 @@ WSGI_APPLICATION = 'zavodik.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        # 'DISABLE_SERVER_SIDE_CURSORS': True,
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': getenv('POSTGRES_DB', default='postgres'),
-        'USER': getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': getenv('POSTGRES_HOST', default='db'),
-        'PORT': getenv('POSTGRES_PORT', default=5432)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+if HOST != "localhost":
+    DATABASES = {
+        'default': {
+            # 'DISABLE_SERVER_SIDE_CURSORS': True,
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', default='postgres'),
+            'USER': os.getenv('POSTGRES_USER', default='postgres'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+            'HOST': os.getenv('POSTGRES_HOST', default='db'),
+            'PORT': os.getenv('POSTGRES_PORT', default=5432)
+        }
+    }
 
 
 # Password validation
@@ -122,7 +151,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
